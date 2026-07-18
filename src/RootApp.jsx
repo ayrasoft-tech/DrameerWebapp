@@ -70,7 +70,7 @@ export default function RootApp() {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f0fdfa', padding: '20px' }}>
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ background: 'white', padding: '40px', borderRadius: '30px', boxShadow: '0 20px 50px rgba(13, 148, 136, 0.15)', textAlign: 'center', width: '100%', maxWidth: '400px' }}>
           <img src="/clinic-logo.png" alt="Clinic Logo" style={{ width: '70px', height: 'auto', marginBottom: '10px' }} />
-          <h2 style={{ color: '#0d9488', marginBottom: '30px', fontWeight: '800' }}>Peoples Dental Care</h2>
+          <h2 style={{ color: '#0d9488', marginBottom: '30px', fontWeight: '800' }}>Dr Ameer Faizal's Dental Care</h2>
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <input type="text" placeholder="Username" value={loginForm.username} onChange={(e) => setLoginInput({ ...loginForm, username: e.target.value })} style={{ padding: '14px', borderRadius: '12px', border: '2px solid #f0fdfa', backgroundColor: '#f9fafb', fontSize: '16px', outline: 'none', color: '#1f2937' }} />
             <input type="password" placeholder="Password" value={loginForm.password} onChange={(e) => setLoginInput({ ...loginForm, password: e.target.value })} style={{ padding: '14px', borderRadius: '12px', border: '2px solid #f0fdfa', backgroundColor: '#f9fafb', fontSize: '16px', outline: 'none', color: '#1f2937' }} />

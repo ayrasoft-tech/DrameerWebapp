@@ -86,7 +86,7 @@ function ReceptionApp({ onLogout }) {
         <div className="navbar" style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center', width: '100%' }}>
             <img src="/clinic-logo.png" alt="Logo" style={{ width: '35px' }} />
-            <h1 className="navbar-title" style={{ margin: 0, color: '#0f766e', fontSize: '24px' }}>Peoples Dental</h1>
+            <h1 className="navbar-title" style={{ margin: 0, color: '#0f766e', fontSize: '24px' }}>Dr Ameer Faizal's Dental Care</h1>
           </div>
           <div className="navbar-controls" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <motion.button animate={{ rotate: isRefreshing ? 360 : 0 }} transition={{ repeat: isRefreshing ? Infinity : 0, duration: 0.6 }} onClick={refreshData} style={{ padding: '10px', borderRadius: '50%', border: 'none', background: 'white', color: '#0d9488', cursor: 'pointer', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
