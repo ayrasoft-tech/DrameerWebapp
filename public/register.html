@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Patient Registration | Dr Ameer Faizal's Dental Care</title>
+
+    <!-- Apple / iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Dr Ameer Faizal's Dental Care">
+    <link rel="apple-touch-icon" href="./clinic-logo.png">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --border-focus: #3b82f6;
+            --card-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.1), 0 4px 12px -2px rgba(37, 99, 235, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            max-width: 650px;
+            box-sizing: border-box;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            padding: 35px 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .header-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #3b82f6;
+        }
+
+        .header-section h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-section p {
+            margin: 8px 0 0 0;
+            opacity: 0.9;
+            font-size: 15px;
+        }
+
+        .form-content {
+            padding: 30px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-family: inherit;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            background-color: white;
+            box-shadow: 0 0 0 3.5px rgba(59, 130, 246, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            padding: 5px 0;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 0;
+            color: var(--text-main);
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        /* Privacy Policy Checkbox */
+        .privacy-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 5px;
+            padding: 15px;
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+        }
+
+        .privacy-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .privacy-group label {
+            font-size: 13.5px;
+            color: #1e3a8a;
+            cursor: pointer;
+            line-height: 1.5;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .privacy-group label a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .privacy-group label a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            box-shadow: 0 6px 12px -1px rgba(37, 99, 235, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #status {
+            text-align: center;
+            font-weight: 600;
+            margin-top: 15px;
+            font-size: 14px;
+            padding: 12px;
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .booking-card {
+                border-radius: 16px;
+            }
+
+            .form-content {
+                padding: 20px;
+            }
+
+            .grid-layout {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="booking-card">
+        <div class="header-section">
+            <h1>Dr Ameer Faizal's Dental Care</h1>
+            <p>Patient Registration Desk</p>
+        </div>
+
+        <form id="registrationForm" class="form-content">
+            <div class="grid-layout">
+
+                <!-- Existing Patient Toggle -->
+                <div class="input-group full-width"
+                    style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 15px;">
+                    <label style="margin-bottom: 0; font-size: 14.5px; color: #1e293b;">Are you an existing
+                        patient?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="existingPatient" value="yes" id="existingYes"> Yes</label>
+                        <label><input type="radio" name="existingPatient" value="no" id="existingNo" checked> No</label>
+                    </div>
+                </div>
+
+                <!-- Patient ID Input (Shown when Yes) -->
+                <div class="input-group full-width" id="patientIdGroup" style="display: none;">
+                    <label for="patientIdOrPhone">Patient ID or Phone Number</label>
+                    <input type="text" id="patientIdOrPhone" placeholder="Enter ID or Phone Number">
+                </div>
+
+                <!-- Full Name -->
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="John Doe" required>
+                </div>
+
+                <!-- Doctor Selection -->
+                <div class="input-group">
+                    <label for="doctor">Select Doctor</label>
+                    <select id="doctor" required>
+                        <option value="" disabled selected>-- Choose a Doctor --</option>
+                        <option value="Dr. Ameer Faizal">Dr. Ameer Faizal</option>
+                        <option value="Dr. Huda M">Dr. Huda M</option>
+                        <option value="Dr. Faiz Pk">Dr. Faiz Pk</option>
+                        <option value="Dr. Abdul Muneer">Dr. Abdul Muneer</option>
+                        <option value="Dr. Ziyara">Dr. Ziyara</option>
+                        <option value="Dr. Lubna">Dr. Lubna</option>
+                        <option value="Dr. Vishnu">Dr. Vishnu</option>
+                        <option value="Dr. Nishad">Dr. Nishad</option>
+                    </select>
+                </div>
+
+                <!-- Age -->
+                <div class="input-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" placeholder="e.g. 35" min="1" max="120" required>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="10-digit mobile" pattern="[0-9]{10}" required>
+                </div>
+
+                <!-- Email Address -->
+                <div class="input-group full-width">
+                    <label for="email">Email Address (Optional)</label>
+                    <input type="email" id="email" placeholder="patient@example.com">
+                </div>
+
+                <!-- Reason for Visit -->
+                <div class="input-group full-width">
+                    <label for="reason">Reason For Visit</label>
+                    <textarea id="reason" placeholder="Briefly describe your dental issue..."></textarea>
+                </div>
+
+                <!-- Privacy Policy Checkbox -->
+                <div class="privacy-group full-width">
+                    <input type="checkbox" id="privacyCheckbox" checked>
+                    <label for="privacyCheckbox">
+                        I have read and agree to the
+                        <a href="./privacy.html" target="_blank">Privacy Policy</a>
+                        of Dr Ameer Faizal's Dental Care
+                    </label>
+                </div>
+
+                <!-- Status Output -->
+                <div id="status" class="full-width"></div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitBtn" class="full-width">Register</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDXT7qWdMs92WGqScUm8h4NhI-PIj2di1g",
+            authDomain: "drameerfaizalsdentalcare-dee74.firebaseapp.com",
+            projectId: "drameerfaizalsdentalcare-dee74",
+            storageBucket: "drameerfaizalsdentalcare-dee74.firebasestorage.app",
+            messagingSenderId: "647829510570",
+            appId: "1:647829510570:web:cdb6b295396bf2b6b733d3",
+            measurementId: "G-6GCRDSWM7Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Toggle Patient ID Field Logic
+        const existingYes = document.getElementById('existingYes');
+        const existingNo = document.getElementById('existingNo');
+        const patientIdGroup = document.getElementById('patientIdGroup');
+        const patientIdOrPhoneInput = document.getElementById('patientIdOrPhone');
+
+        function togglePatientId() {
+            if (existingYes.checked) {
+                patientIdGroup.style.display = 'flex';
+                patientIdOrPhoneInput.required = true;
+            } else {
+                patientIdGroup.style.display = 'none';
+                patientIdOrPhoneInput.required = false;
+                patientIdOrPhoneInput.value = '';
+            }
+        }
+
+        existingYes.addEventListener('change', togglePatientId);
+        existingNo.addEventListener('change', togglePatientId);
+
+        // Form Submission Handling
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Privacy Policy validation
+            const privacyCheckbox = document.getElementById('privacyCheckbox');
+            if (!privacyCheckbox.checked) {
+                const statusDiv = document.getElementById('status');
+                statusDiv.style.display = "block";
+                statusDiv.textContent = "⚠️ Please agree to the Privacy Policy before submitting.";
+                statusDiv.style.backgroundColor = "#fff7ed";
+                statusDiv.style.color = "#c2410c";
+                statusDiv.style.border = "1px solid #fed7aa";
+                return;
+            }
+
+            const statusDiv = document.getElementById('status');
+            const submitBtn = document.getElementById('submitBtn');
+
+            statusDiv.style.display = "block";
+            statusDiv.textContent = "Sending registration details...";
+            statusDiv.style.backgroundColor = "#eff6ff";
+            statusDiv.style.color = "#1d4ed8";
+            statusDiv.style.border = "1px solid #bfdbfe";
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Please wait...";
+
+            const isExisting = document.querySelector('input[name="existingPatient"]:checked').value === 'yes';
+            const patientIdOrPhoneVal = isExisting ? patientIdOrPhoneInput.value.trim() : null;
+
+            try {
+                await addDoc(collection(db, "appointments"), {
+                    isRegistration: true,
+                    isExisting: isExisting,
+                    patientIdOrPhone: patientIdOrPhoneVal,
+                    name: document.getElementById('name').value,
+                    age: document.getElementById('age').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    doctor: document.getElementById('doctor').value,
+                    reason: document.getElementById('reason').value,
+                    timestamp: serverTimestamp()
+                });
+
+                statusDiv.textContent = "✓ Registration Sent Successfully!";
+                statusDiv.style.backgroundColor = "#f0fdf4";
+                statusDiv.style.color = "#15803d";
+                statusDiv.style.border = "1px solid #bbf7d0";
+                document.getElementById('registrationForm').reset();
+                togglePatientId();
+
+            } catch (error) {
+                console.error(error);
+                statusDiv.textContent = "❌ Error submitting registration. Please try again.";
+                statusDiv.style.backgroundColor = "#fef2f2";
+                statusDiv.style.color = "#b91c1c";
+                statusDiv.style.border = "1px solid #fecaca";
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Register";
+
+                setTimeout(() => {
+                    if (statusDiv.textContent.includes('✓')) {
+                        statusDiv.style.display = "none";
+                    }
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+
+</html>

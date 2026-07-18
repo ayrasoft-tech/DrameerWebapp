@@ -1,0 +1,20 @@
+{
+  "short_name": "Peoples Dental Care Admin",
+  "name": "Peoples Dental Care Admin Dashboard",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "theme_color": "#0d9488",
+  "background_color": "#f0fdfa",
+  "icons": [
+    {
+      "src": "/clinic-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/clinic-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

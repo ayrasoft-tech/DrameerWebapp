@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Book Appointment | Dr Ameer Faizal's Dental Care</title>
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="./booking-manifest.json">
+    <meta name="theme-color" content="#0d9488">
+    <meta name="description"
+        content="Book your dental appointment at Dr Ameer Faizal's Dental Care quickly and easily.">
+
+    <!-- Apple / iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Dr Ameer Faizal's Dental Care">
+    <link rel="apple-touch-icon" href="./clinic-logo.png">
+
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#0d9488">
+    <meta name="msapplication-TileImage" content="./clinic-logo.png">
+    <style>
+        :root {
+            --primary: #0d9488;
+            /* Elegant Teal/Dental Green */
+            --primary-hover: #0f766e;
+            --bg-color: #f0fdfa;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #d1d5db;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .booking-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 420px;
+            box-sizing: border-box;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header-section h1 {
+            color: var(--primary);
+            margin: 0 0 5px 0;
+            font-size: 24px;
+        }
+
+        .header-section p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-family: inherit;
+            background-color: #f9fafb;
+            transition: all 0.2s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Styles for the new Radio Buttons */
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            padding: 10px 0;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        /* Privacy Policy Checkbox */
+        .privacy-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            padding: 12px;
+            background-color: #f0fdfa;
+            border: 1px solid #99f6e4;
+            border-radius: 8px;
+        }
+
+        .privacy-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .privacy-group label {
+            font-size: 13px;
+            color: var(--text-main);
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .privacy-group label a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .privacy-group label a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #status {
+            text-align: center;
+            font-weight: 500;
+            margin-top: 15px;
+            font-size: 14px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .row .input-group {
+            flex: 1;
+        }
+
+        @media (max-width: 400px) {
+            .booking-card {
+                padding: 20px;
+            }
+
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="booking-card">
+        <div class="header-section">
+            <h1>Dr Ameer Faizal's Dental Care</h1>
+            <p>Request an Appointment</p>
+        </div>
+
+        <form id="appointmentForm">
+            <div class="input-group">
+                <label>Are you an existing patient?</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="existingPatient" value="yes" id="existingYes"> Yes</label>
+                    <label><input type="radio" name="existingPatient" value="no" id="existingNo" checked> No</label>
+                </div>
+            </div>
+
+            <div class="input-group" id="patientIdGroup" style="display: none;">
+                <label for="patientId">Patient ID</label>
+                <input type="text" id="patientId" placeholder="e.g. PID-1001">
+            </div>
+
+            <div class="input-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="" required>
+            </div>
+
+            <div class="row">
+                <div class="input-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" placeholder="e.g. 35" min="1" max="120" required>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="10-digit mobile" pattern="[0-9]{10}" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email Address (Optional)</label>
+                <input type="email" id="email" placeholder="patient@example.com">
+            </div>
+
+            <div class="row">
+                <div class="input-group">
+                    <label for="date">Preferred Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="input-group">
+                    <label for="time">Preferred Time</label>
+                    <input type="time" id="time" min="09:00" max="19:00" required>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="doctor">Select Doctor</label>
+                <select id="doctor" required>
+                    <option value="" disabled selected>-- Choose a Doctor --</option>
+                    <option value="Dr. Mohammed Hiba Malik">Dr. Mohammed Hiba Malik</option>
+                    <option value="Dr. Huda M">Dr. Huda M</option>
+                    <option value="Dr. Faiz Pk">Dr. Faiz Pk</option>
+                    <option value="Dr. Abdul Muneer">Dr. Abdul Muneer</option>
+                    <option value="Dr. Ziyara">Dr. Ziyara</option>
+                    <option value="Dr. Lubna">Dr. Lubna</option>
+                    <option value="Dr. Vishnu">Dr. Vishnu</option>
+                    <option value="Dr. Nishad">Dr. Nishad</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="reason">Reason For Visit</label>
+                <textarea id="reason" placeholder="Briefly describe your dental issue..."></textarea>
+            </div>
+
+            <!-- Privacy Policy Checkbox -->
+            <div class="privacy-group">
+                <input type="checkbox" id="privacyCheckbox" checked>
+                <label for="privacyCheckbox">
+                    I have read and agree to the
+                    <a href="./privacy.html" target="_blank">Privacy Policy</a>
+                    of Dr Ameer Faizal's Dental Care.
+                </label>
+            </div>
+
+            <button type="submit" id="submitBtn">Submit Request</button>
+        </form>
+        <div id="status"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDXT7qWdMs92WGqScUm8h4NhI-PIj2di1g",
+            authDomain: "drameerfaizalsdentalcare-dee74.firebaseapp.com",
+            projectId: "drameerfaizalsdentalcare-dee74",
+            storageBucket: "drameerfaizalsdentalcare-dee74.firebasestorage.app",
+            messagingSenderId: "647829510570",
+            appId: "1:647829510570:web:cdb6b295396bf2b6b733d3",
+            measurementId: "G-6GCRDSWM7Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- UI Enhancements ---
+        const dateInput = document.getElementById('date');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+
+        // --- NEW: Toggle Patient ID Field Logic ---
+        const existingYes = document.getElementById('existingYes');
+        const existingNo = document.getElementById('existingNo');
+        const patientIdGroup = document.getElementById('patientIdGroup');
+        const patientIdInput = document.getElementById('patientId');
+
+        function togglePatientId() {
+            if (existingYes.checked) {
+                patientIdGroup.style.display = 'block';
+                patientIdInput.required = true; // Make it required if they say they have an ID
+            } else {
+                patientIdGroup.style.display = 'none';
+                patientIdInput.required = false;
+                patientIdInput.value = ''; // Clear it out if they change their mind
+            }
+        }
+
+        existingYes.addEventListener('change', togglePatientId);
+        existingNo.addEventListener('change', togglePatientId);
+
+
+        // --- Form Submission Handling ---
+        document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Privacy Policy validation
+            const privacyCheckbox = document.getElementById('privacyCheckbox');
+            if (!privacyCheckbox.checked) {
+                const statusDiv = document.getElementById('status');
+                statusDiv.style.display = "block";
+                statusDiv.textContent = "⚠️ Please agree to the Privacy Policy before submitting.";
+                statusDiv.style.backgroundColor = "#fff7ed";
+                statusDiv.style.color = "#c2410c";
+                privacyCheckbox.closest('.privacy-group').style.border = "1px solid #f97316";
+                return;
+            }
+            document.getElementById('privacyCheckbox').closest('.privacy-group').style.border = "1px solid #99f6e4";
+
+            const statusDiv = document.getElementById('status');
+            const submitBtn = document.getElementById('submitBtn');
+
+            statusDiv.style.display = "block";
+            statusDiv.textContent = "Sending request...";
+            statusDiv.style.backgroundColor = "#e0f2fe";
+            statusDiv.style.color = "#0369a1";
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Please wait...";
+
+            // Determine if existing patient and grab ID
+            const isExisting = document.querySelector('input[name="existingPatient"]:checked').value === 'yes';
+            const patientIdVal = isExisting ? document.getElementById('patientId').value.trim() : null;
+
+            try {
+                await addDoc(collection(db, "appointments"), {
+                    isExisting: isExisting, // NEW: Saves true or false
+                    patientId: patientIdVal, // NEW: Saves the ID or null
+                    name: document.getElementById('name').value,
+                    age: document.getElementById('age').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    date: document.getElementById('date').value,
+                    time: document.getElementById('time').value,
+                    doctor: document.getElementById('doctor').value,
+                    reason: document.getElementById('reason').value,
+                    timestamp: serverTimestamp()
+                });
+
+                statusDiv.textContent = "✓ Appointment Request Sent Successfully!";
+                statusDiv.style.backgroundColor = "#dcfce7";
+                statusDiv.style.color = "#15803d";
+                document.getElementById('appointmentForm').reset();
+                togglePatientId(); // Reset the hidden field state after submission
+
+            } catch (error) {
+                console.error(error);
+                statusDiv.textContent = "❌ Error submitting request. Please try again.";
+                statusDiv.style.backgroundColor = "#fee2e2";
+                statusDiv.style.color = "#b91c1c";
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Request";
+
+                setTimeout(() => {
+                    if (statusDiv.textContent.includes('✓')) {
+                        statusDiv.style.display = "none";
+                    }
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+
+</html>

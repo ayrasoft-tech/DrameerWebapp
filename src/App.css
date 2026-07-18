@@ -1,0 +1,133 @@
+/* App.css */
+
+body {
+  margin: 0;
+  /* Safe areas for mobile notches and bottom swipe bars */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  overscroll-behavior-y: none;
+  background-color: #f0fdfa;
+  font-family: "Inter", sans-serif;
+}
+
+/* --- STANDARD DESKTOP STYLES --- */
+
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 15px 25px;
+  border-radius: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  gap: 10px;
+}
+
+.navbar-title {
+  color: #0d9488;
+  font-size: 1.2rem;
+  margin: 0;
+  font-weight: 800;
+}
+
+.navbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.month-btn {
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.day-label {
+  text-align: center;
+  font-weight: 800;
+  color: #94a3b8;
+  font-size: 11px;
+  padding-bottom: 10px;
+}
+
+.calendar-day-box {
+  min-height: 80px;
+  border: 1px solid #f1f5f9;
+  padding: 10px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.1s;
+}
+
+.calendar-day-box:active {
+  transform: scale(0.95);
+}
+
+/* --- MOBILE OPTIMIZATIONS --- */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 15px;
+    justify-content: center;
+    border-radius: 15px;
+  }
+  
+  .navbar-title {
+    font-size: 1.1rem;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+  }
+  
+  .navbar-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .month-header {
+    margin-bottom: 15px;
+  }
+
+  /* Make navigation buttons larger touch targets for thumbs */
+  .month-btn {
+    padding: 12px 20px; 
+  }
+
+  /* Shrink calendar gaps and boxes to fit 7 columns cleanly */
+  .calendar-grid {
+    gap: 4px;
+  }
+  
+  .calendar-day-box {
+    min-height: 55px;
+    padding: 4px;
+    border-radius: 10px;
+  }
+
+  /* Shrink SUN, MON, TUE texts so they don't overlap */
+  .day-label {
+    font-size: 9px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
