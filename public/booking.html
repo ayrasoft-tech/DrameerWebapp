@@ -299,10 +299,19 @@
                     <option value="Dr. ARAVIND P(PERIODONTICS IMPLANT SPECILIST)">Dr. ARAVIND P(PERIODONTICS IMPLANT
                         SPECILIST)</option>
                     <option value="Dr. AMRITHA V.S">Dr. AMRITHA V.S(PEDODONTICS)</option>
-                    <option value="Dr. BLESSIN GEORGE">Dr. BLESSIN GEORGE(TMJ & ODD SPECIALIST)</option>
-
+                    <option value="Dr. BLESSIN GEORGE">Dr. BLESSIN GEORGE(TMJ &amp; ODD SPECIALIST)</option>
                 </select>
             </div>
+
+            <!-- Dr. Ameer Availability Info Box (shown dynamically) -->
+            <div id="drAmeerAvailBox" style="display:none; margin-top:-6px; padding:14px 16px; background:#f0fdfa; border:1px solid #99f6e4; border-radius:10px; font-size:13px;">
+                <p style="margin:0 0 10px; font-weight:700; color:#0f766e; font-size:14px;">🕐 Dr. Ameer Faizal's Clinic Hours</p>
+                <div id="drAmeerScheduleRows" style="display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
+
+            <!-- Date unavailable warning -->
+            <div id="dateWarning" style="display:none; margin-top:-6px; padding:12px 14px; background:#fef3c7; border:1px solid #fbbf24; border-radius:10px; font-size:13px; color:#92400e; font-weight:600;"></div>
+
 
             <div class="input-group">
                 <label for="reason">Reason For Visit</label>
@@ -326,7 +335,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // Your Firebase Configuration
         const firebaseConfig = {
@@ -346,6 +355,86 @@
         const dateInput = document.getElementById('date');
         const today = new Date().toISOString().split('T')[0];
         dateInput.setAttribute('min', today);
+
+        // --- Dr. Ameer Availability Logic ---
+        const DAYS_ORDER = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        let drAmeerSchedule = null;
+
+        async function loadDrAmeerSchedule() {
+            if (drAmeerSchedule) return drAmeerSchedule; // cached
+            try {
+                const snap = await getDoc(doc(db, 'doctor_availability', 'dr_ameer_faizal'));
+                drAmeerSchedule = snap.exists() ? snap.data() : null;
+            } catch (e) {
+                console.warn('Could not load schedule:', e);
+                drAmeerSchedule = null;
+            }
+            return drAmeerSchedule;
+        }
+
+        function fmt12(time24) {
+            if (!time24) return '';
+            const [h, m] = time24.split(':').map(Number);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const h12 = h % 12 || 12;
+            return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+        }
+
+        function renderScheduleBox(sched) {
+            const box = document.getElementById('drAmeerAvailBox');
+            const rows = document.getElementById('drAmeerScheduleRows');
+            if (!sched) { box.style.display = 'none'; return; }
+            rows.innerHTML = '';
+            DAYS_ORDER.forEach(day => {
+                const d = sched[day];
+                if (!d) return;
+                const cap = day.charAt(0).toUpperCase() + day.slice(1);
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex;align-items:center;gap:10px;';
+                if (d.available) {
+                    row.innerHTML = `<span style="min-width:90px;font-weight:600;color:#0f766e;">${cap}</span><span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:6px;font-weight:600;">${fmt12(d.from)} – ${fmt12(d.to)}</span>`;
+                } else {
+                    row.innerHTML = `<span style="min-width:90px;font-weight:600;color:#94a3b8;">${cap}</span><span style="background:#f1f5f9;color:#94a3b8;padding:3px 10px;border-radius:6px;">Not Available</span>`;
+                }
+                rows.appendChild(row);
+            });
+            box.style.display = 'block';
+        }
+
+        function checkDateWarning() {
+            const warning = document.getElementById('dateWarning');
+            const doctorVal = document.getElementById('doctor').value;
+            const dateVal = dateInput.value;
+            if (!drAmeerSchedule || !doctorVal.includes('AMEER FAIZAL') || !dateVal) {
+                warning.style.display = 'none';
+                return;
+            }
+            const dayName = DAYS_ORDER[new Date(dateVal + 'T00:00:00').getDay()];
+            const d = drAmeerSchedule[dayName];
+            if (d && !d.available) {
+                const cap = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+                warning.textContent = `⚠️ Dr. Ameer Faizal is not available on ${cap}s. Please choose a different date.`;
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+
+        const doctorSelect = document.getElementById('doctor');
+        doctorSelect.addEventListener('change', async () => {
+            const box = document.getElementById('drAmeerAvailBox');
+            const warning = document.getElementById('dateWarning');
+            if (doctorSelect.value.includes('AMEER FAIZAL')) {
+                const sched = await loadDrAmeerSchedule();
+                renderScheduleBox(sched);
+                checkDateWarning();
+            } else {
+                box.style.display = 'none';
+                warning.style.display = 'none';
+            }
+        });
+
+        dateInput.addEventListener('change', checkDateWarning);
 
         // --- NEW: Toggle Patient ID Field Logic ---
         const existingYes = document.getElementById('existingYes');

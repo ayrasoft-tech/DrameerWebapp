@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: "AIzaSyDXT7qWdMs92WGqScUm8h4NhI-PIj2di1g",
+  authDomain: "drameerfaizalsdentalcare-dee74.firebaseapp.com",
+  projectId: "drameerfaizalsdentalcare-dee74",
+  storageBucket: "drameerfaizalsdentalcare-dee74.firebasestorage.app",
+  messagingSenderId: "647829510570",
+  appId: "1:647829510570:web:cdb6b295396bf2b6b733d3",
+  measurementId: "G-6GCRDSWM7Z"
 };
 
 // Initialize Firebase

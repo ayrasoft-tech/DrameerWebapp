@@ -1,9 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs, doc, getDoc, addDoc, setDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, Clock, Calendar as CalIcon, CheckSquare, BarChart2, Download } from 'lucide-react';
 import './App.css';
+
+const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+const DEFAULT_SCHEDULE = {
+  monday:    { available: true,  from: '09:00', to: '17:00' },
+  tuesday:   { available: true,  from: '09:00', to: '17:00' },
+  wednesday: { available: true,  from: '09:00', to: '17:00' },
+  thursday:  { available: true,  from: '09:00', to: '17:00' },
+  friday:    { available: true,  from: '09:00', to: '17:00' },
+  saturday:  { available: true,  from: '09:00', to: '13:00' },
+  sunday:    { available: false, from: '',      to: ''       },
+};
 
 function App({ onLogout }) {
   const [activeTab, setActiveTab] = useState('appointments'); // Set to appointments so you can see it
@@ -18,6 +29,8 @@ function App({ onLogout }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDayData, setSelectedDayData] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [schedule, setSchedule] = useState(DEFAULT_SCHEDULE);
+  const [isSavingSchedule, setIsSavingSchedule] = useState(false);
 
   const refreshData = async () => {
     setIsRefreshing(true);
@@ -25,6 +38,7 @@ function App({ onLogout }) {
     await fetchCalendar();
     await fetchTodos();
     await fetchReports();
+    await fetchSchedule();
     setTimeout(() => setIsRefreshing(false), 600);
   };
 
@@ -72,11 +86,31 @@ function App({ onLogout }) {
     } catch (error) { console.error(error); }
   };
 
+  const fetchSchedule = async () => {
+    try {
+      const snap = await getDoc(doc(db, 'doctor_availability', 'dr_ameer_faizal'));
+      if (snap.exists()) setSchedule({ ...DEFAULT_SCHEDULE, ...snap.data() });
+    } catch (e) { console.error(e); }
+  };
+
+  const saveSchedule = async () => {
+    setIsSavingSchedule(true);
+    try {
+      await setDoc(doc(db, 'doctor_availability', 'dr_ameer_faizal'), schedule);
+      alert('✅ Schedule saved successfully!');
+    } catch (e) {
+      console.error(e);
+      alert('❌ Error saving schedule.');
+    }
+    setIsSavingSchedule(false);
+  };
+
   useEffect(() => {
     fetchAppointments();
     fetchCalendar();
     fetchTodos();
     fetchReports();
+    fetchSchedule();
   }, [currentDate]);
 
   const handleAddTodo = async (e) => {
@@ -120,6 +154,7 @@ function App({ onLogout }) {
               <button onClick={() => setActiveTab('calendar')} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '8px 15px', borderRadius: '12px', border: 'none', cursor: 'pointer', background: activeTab === 'calendar' ? '#0d9488' : 'transparent', color: activeTab === 'calendar' ? 'white' : '#64748b', fontWeight: '700' }}><CalIcon size={16} /> Calendar</button>
               <button onClick={() => setActiveTab('todo')} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '8px 15px', borderRadius: '12px', border: 'none', cursor: 'pointer', background: activeTab === 'todo' ? '#0d9488' : 'transparent', color: activeTab === 'todo' ? 'white' : '#64748b', fontWeight: '700' }}><CheckSquare size={16} /> To-Do</button>
               <button onClick={() => setActiveTab('reports')} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '8px 15px', borderRadius: '12px', border: 'none', cursor: 'pointer', background: activeTab === 'reports' ? '#0d9488' : 'transparent', color: activeTab === 'reports' ? 'white' : '#64748b', fontWeight: '700' }}><BarChart2 size={16} /> Reports</button>
+              <button onClick={() => setActiveTab('schedule')} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '8px 15px', borderRadius: '12px', border: 'none', cursor: 'pointer', background: activeTab === 'schedule' ? '#0d9488' : 'transparent', color: activeTab === 'schedule' ? 'white' : '#64748b', fontWeight: '700' }}>🕐 Schedule</button>
             </div>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <a href="/register.html" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 15px', borderRadius: '12px', border: 'none', background: '#ccfbf1', color: '#0f766e', fontWeight: '700', fontSize: '14px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
@@ -393,6 +428,66 @@ function App({ onLogout }) {
                   </div>
                 </div>
 
+              </div>
+            )}
+
+            {/* SCHEDULE TAB */}
+            {activeTab === 'schedule' && (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
+                  <div>
+                    <h2 style={{ color: '#0f766e', marginTop: 0, marginBottom: '6px' }}>🕐 Dr. Ameer Faizal's Availability</h2>
+                    <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>Set the days & hours shown to patients on the booking page. All other doctors show as always available.</p>
+                  </div>
+                  <button
+                    onClick={saveSchedule}
+                    disabled={isSavingSchedule}
+                    style={{ padding: '12px 24px', background: isSavingSchedule ? '#94a3b8' : 'linear-gradient(135deg, #0d9488, #0f766e)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: '700', cursor: isSavingSchedule ? 'not-allowed' : 'pointer', fontSize: '15px', boxShadow: '0 4px 12px rgba(13,148,136,0.25)', whiteSpace: 'nowrap' }}
+                  >
+                    {isSavingSchedule ? '⏳ Saving...' : '💾 Save Schedule'}
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {DAYS.map(day => (
+                    <div key={day} style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '16px 20px', background: schedule[day]?.available ? '#f0fdfa' : '#f8fafc', borderRadius: '15px', border: `1px solid ${schedule[day]?.available ? '#99f6e4' : '#e2e8f0'}`, flexWrap: 'wrap', transition: 'all 0.2s' }}>
+                      <input
+                        type="checkbox"
+                        checked={schedule[day]?.available || false}
+                        onChange={e => setSchedule(prev => ({ ...prev, [day]: { ...prev[day], available: e.target.checked } }))}
+                        style={{ width: '20px', height: '20px', accentColor: '#0d9488', cursor: 'pointer', flexShrink: 0 }}
+                      />
+                      <span style={{ minWidth: '100px', fontWeight: '700', fontSize: '15px', color: schedule[day]?.available ? '#0f766e' : '#94a3b8', textTransform: 'capitalize' }}>
+                        {day}
+                      </span>
+                      {schedule[day]?.available ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: '13px', color: '#64748b' }}>From</span>
+                          <input
+                            type="time"
+                            value={schedule[day]?.from || '09:00'}
+                            onChange={e => setSchedule(prev => ({ ...prev, [day]: { ...prev[day], from: e.target.value } }))}
+                            style={{ padding: '8px 12px', borderRadius: '10px', border: '1px solid #d1fae5', fontSize: '14px', color: '#1f2937', background: 'white', cursor: 'pointer' }}
+                          />
+                          <span style={{ fontSize: '13px', color: '#64748b' }}>To</span>
+                          <input
+                            type="time"
+                            value={schedule[day]?.to || '17:00'}
+                            onChange={e => setSchedule(prev => ({ ...prev, [day]: { ...prev[day], to: e.target.value } }))}
+                            style={{ padding: '8px 12px', borderRadius: '10px', border: '1px solid #d1fae5', fontSize: '14px', color: '#1f2937', background: 'white', cursor: 'pointer' }}
+                          />
+                          <span style={{ fontSize: '12px', background: '#d1fae5', color: '#065f46', padding: '4px 10px', borderRadius: '8px', fontWeight: '600' }}>✓ Available</span>
+                        </div>
+                      ) : (
+                        <span style={{ fontSize: '14px', color: '#94a3b8', fontStyle: 'italic' }}>Not available — patients will be advised to choose another date</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ marginTop: '20px', padding: '14px 18px', background: '#fef9c3', border: '1px solid #fde68a', borderRadius: '12px', fontSize: '13px', color: '#78350f' }}>
+                  💡 <strong>Tip:</strong> This schedule is live — patients see it immediately on the booking page when they select Dr. Ameer Faizal.
+                </div>
               </div>
             )}
 
